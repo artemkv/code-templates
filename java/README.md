@@ -1,4 +1,4 @@
-##  Hello World
+##  "Hello World"
 
 ```
 package net.artemkv;
@@ -32,7 +32,7 @@ String yearFormatted = String.format("Year: %d", year); // Year: 2020
 String piFormatted = String.format("Pi: %05.2f", pi); // Pi: 03.14
 ```
 
-## For loop
+## "For" loop
 
 ```
 int[] arr = {1, 2, 3, 4, 5};
@@ -100,7 +100,7 @@ public class Person {
 }
 ```
 
-## Equals, hashCode
+## equals, hashCode
 
 ```
 @Override
@@ -158,7 +158,7 @@ Animal cat = new Cat();
 System.out.printf("%s said %s", cat.getName(), cat.makeSound());
 ```
 
-## Inner Classes
+## Inner classes
 
 ```
 package net.artemkv;
