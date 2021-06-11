@@ -1,6 +1,6 @@
 ##  "Hello World"
 
-```
+```java
 package net.artemkv;
 
 public class Main {
@@ -12,7 +12,7 @@ public class Main {
 
 ## StringBuilder
 
-```
+```java
 StringBuilder sb = new StringBuilder();
 sb.append("Hello");
 sb.append(", ");
@@ -22,7 +22,7 @@ String s = sb.toString();
 
 ## String.format
 
-```
+```java
 String city = "Barcelona";
 int year = 2020;
 double pi = 3.1415;
@@ -34,16 +34,16 @@ String piFormatted = String.format("Pi: %05.2f", pi); // Pi: 03.14
 
 ## "For" loop
 
-```
+```java
 int[] arr = {1, 2, 3, 4, 5};
 for (int i = 0; i < arr.length; i++) {
-	System.out.println(arr[i]);
+    System.out.println(arr[i]);
 }
 ```
 
 ## Array to list to array
 
-```
+```java
 // list to array
 
 List<String> list = new LinkedList<>();
@@ -61,7 +61,7 @@ List<String> list = Arrays.asList(arr); // fixed-size list
 
 ## Class
 
-```
+```java
 package net.artemkv;
 
 public class Person {
@@ -102,31 +102,31 @@ public class Person {
 
 ## equals, hashCode
 
-```
+```java
 @Override
 public boolean equals(Object o) {
-	if (o == this) {
-		return true;
-	}
-	if (!(o instanceof P)) {
-		return false;
-	}
-	P other = (P) o;
-	return id.equals(other.id);
+    if (o == this) {
+        return true;
+    }
+    if (!(o instanceof P)) {
+        return false;
+    }
+    P other = (P) o;
+    return id.equals(other.id);
 }
 
 @Override
 public int hashCode() {
     int result = 17;
-	result = 31 * result + x;
-	result = 31 * result + y;
-	return result;
+    result = 31 * result + x;
+    result = 31 * result + y;
+    return result;
 }
 ```
 
 ## Inheritance
 
-```
+```java
 package net.artemkv;
 
 public abstract class Animal {
@@ -160,7 +160,7 @@ System.out.printf("%s said %s", cat.getName(), cat.makeSound());
 
 ## Inner classes
 
-```
+```java
 package net.artemkv;
 
 import java.util.LinkedList;
@@ -190,7 +190,7 @@ public class TaskScheduler {
 
 ## Builder pattern
 
-```
+```java
 package net.artemkv;
 
 public class PersonBuilder {
@@ -244,7 +244,7 @@ public class Person {
 
 ## Singleton
 
-```
+```java
 package net.artemkv;
 
 public final class Singleton {
@@ -261,7 +261,7 @@ public final class Singleton {
 
 ## Enums
 
-```
+```java
 package net.artemkv;
 
 public enum Component {
@@ -288,7 +288,7 @@ public enum Component {
 
 ## Exception handling
 
-```
+```java
 package net.artemkv;
 
 import java.io.PrintWriter;
@@ -325,7 +325,7 @@ public class ExceptionsExample {
 
 ## Custom exceptions
 
-```
+```java
 package net.artemkv;
 
 public class DownloadCancelledException extends RuntimeException {
@@ -339,30 +339,30 @@ public class DownloadCancelledException extends RuntimeException {
 
 ## Try with resource - manual
 
-```
+```java
 InputStreamReader reader = null;
 try {
-	// reader = new InputStreamReader(...);
-	// TODO: use reader
+    // reader = new InputStreamReader(...);
+    // TODO: use reader
 } catch (IOException e) {
-	throw new RuntimeException(e);
+    throw new RuntimeException(e);
 }
 finally {
-	try {
-		if (reader != null) {
-			reader.close();
-		}
-	}
-	catch (IOException e) {
-		// Ignore
-		Log.i("XXXXX", "Error closing reader");
-	}
+    try {
+        if (reader != null) {
+            reader.close();
+        }
+    }
+    catch (IOException e) {
+        // Ignore
+        Log.i("XXXXX", "Error closing reader");
+    }
 }
 ```
 
 ## Functional interfaces
 
-```
+```java
 // non-pure
 Supplier<Integer> getRandom = () -> new Random().nextInt();
 Consumer<Integer> log = x -> System.out.println(x);
@@ -375,7 +375,7 @@ Predicate<Integer> isEven = x -> x % 2 == 0;
 
 ## Futures
 
-```
+```java
 package net.artemkv;
 
 import java.io.IOException;
@@ -431,7 +431,7 @@ future.join();
 
 ## Synchronized
 
-```
+```java
 package net.artemkv;
 
 import java.util.LinkedList;
@@ -454,7 +454,7 @@ public class ThreadSafeList<T> {
 
 ## Safe lazy initialization
 
-```
+```java
 package net.artemkv;
 
 public final class SafeLazyInitialization {
@@ -474,7 +474,7 @@ public final class SafeLazyInitialization {
 
 ## Safe lazy initialization - holder class idiom
 
-```
+```java
 package net.artemkv;
 
 public class SingletonLazyInitialization {
@@ -494,7 +494,7 @@ public class SingletonLazyInitialization {
 
 ## Safe lazy initialization - no synchronization
 
-```
+```java
 package net.artemkv;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -527,7 +527,7 @@ public final class SingletonLazyInitialization {
 
 ## Safe lazy initialization - double-check
 
-```
+```java
 package net.artemkv;
 
 public class DoubleCheck {
@@ -559,69 +559,69 @@ public class DoubleCheck {
 
 ## Interrupted exception
 
-```
+```java
 try {
-	sleep(delay);
+    sleep(delay);
 } catch (InterruptedException e) {
-	// restore interrupted status
-	Thread.currentThread().interrupt();
+    // restore interrupted status
+    Thread.currentThread().interrupt();
 }
 ```
 
 ## Paths and files
 
-```
+```java
 Path path = Paths.get("d://temp");
 Files.exists(path);
 Files.isDirectory(path);
 
 Path dir = Paths.get("d://temp");
 try {
-	Files.list(dir).forEach(System.out::println);
+    Files.list(dir).forEach(System.out::println);
 } catch (IOException e) {
-	e.printStackTrace();
+    e.printStackTrace();
 }
 
 Path doc = Paths.get("d://temp/test.txt");
 try {
-	Files.lines(doc).forEach(System.out::println);
+    Files.lines(doc).forEach(System.out::println);
 } catch (IOException e) {
-	e.printStackTrace();
+    e.printStackTrace();
 }
 ```
 
 ## Buffered reader
 
-```
+```java
 Path path = Paths.get("d://temp//test.txt");
 try (BufferedReader r = Files.newBufferedReader(path)) {
-	r.lines().forEach(System.out::println);
+    r.lines().forEach(System.out::println);
 } catch (IOException e) {
-	System.out.println("Something went wrong: " + e.toString());
+    System.out.println("Something went wrong: " + e.toString());
 }
 ```
 
 ## Channels and buffers
 
-```
+```java
 Path path = Paths.get("d://temp//test.txt");
 try (SeekableByteChannel channel = Files.newByteChannel(path, StandardOpenOption.READ)) {
-	ByteBuffer buffer = ByteBuffer.allocateDirect(1024);
-	while (channel.read(buffer) > 0) {
-		buffer.flip();
-		while (buffer.hasRemaining()) {
-			System.out.print(buffer.get() + ",");
-		}
-		buffer.clear();
-	}
+    ByteBuffer buffer = ByteBuffer.allocateDirect(1024);
+    while (channel.read(buffer) > 0) {
+        buffer.flip();
+        while (buffer.hasRemaining()) {
+            System.out.print(buffer.get() + ",");
+        }
+        buffer.clear();
+    }
 } catch (IOException e) {
-	System.out.println("Something went wrong: " + e.toString());
+    System.out.println("Something went wrong: " + e.toString());
 }
 ```
 
 ## Streams
 
-```
+```java
 // Quick list creation
 List<Integer> list = Arrays.asList(1, 2, 3);
 
@@ -634,30 +634,30 @@ Stream.of(1, 2, 3).forEach(x -> System.out.println("Number is " + x));
 
 // Skip + limit
 IntStream.iterate(1, x -> x + 1)
-	.skip(4)
-	.limit(8)
-	.forEach(System.out::println);
+    .skip(4)
+    .limit(8)
+    .forEach(System.out::println);
 
 // Int streams, double streams
 IntStream.iterate(1, x -> x + 1)
-	.mapToDouble(x -> x * 2.0)
-	.forEach(System.out::println);
+    .mapToDouble(x -> x * 2.0)
+    .forEach(System.out::println);
 
 // Range
 IntStream.range(0, 5)
-	.forEach(System.out::println);
+    .forEach(System.out::println);
 
 // Peek (tap)
 IntStream.range(0, 5)
-	.peek(x -> System.out.println("Number is " + x))
-	.forEach(System.out::println);
-	
+    .peek(x -> System.out.println("Number is " + x))
+    .forEach(System.out::println);
+    
 // Optional
 Optional<String> val = Stream.of("aaa", "bbb", "ccc").findFirst();
 Optional<String> str = val.map(a -> "First value is " + a);
 
 // Joining collector
 String str = Stream.of(1, 2, 3, 4, 5)
-	.map(x -> x.toString())
-	.collect(Collectors.joining(" "));
+    .map(x -> x.toString())
+    .collect(Collectors.joining(" "));
 ```
