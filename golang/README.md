@@ -28,6 +28,20 @@ const (
 )
 ```
 
+## Conditional statements
+
+```go
+if x < 0 {
+    return 0
+}
+return x // avoid else (indent error flow)
+
+// assign and check
+if v, ok := m["key"]; ok {
+    fmt.Printf("Value is: %d", v)
+}
+```
+
 ## Loops
 
 ```go
@@ -52,6 +66,27 @@ for k, v := range slice {
 }
 ```
 
+## Functions
+
+```go
+// multiple return values
+func calc(x int, y int) (int, int) {
+	return x + y, x * y
+}
+
+// named result parameters (questionable)
+func calc(x int, y int) (sum int, prod int) {
+    sum = x + y
+    prod = x * y
+    return
+}
+
+// method
+func (p Person) greet() {
+    println("Hello, " + p.name)
+}
+```
+
 ## Pointers
 
 ```go
@@ -67,7 +102,20 @@ fmt.Printf("%v %v\n", aaa, *bbb)
 // arrays
 var arr [3]int // empty array of size 3
 arr := [...]int{1, 2, 3} // auto-detect size
+n := len(arr) // get length
 
+// slices
+slice := []int{1, 2, 3}
+var slice []int // instead of slice := []int{}
+slice := arr[:]
+
+// slice of length 10 and capacity 10
+aa := make([]int, 10) // [0 0 0 0 0 0 0 0 0 0]
+aa[0] = 5 // [5 0 0 0 0 0 0 0 0 0]
+
+// slice of length 0 and capacity 10
+aa := make([]int, 0, 10) // []
+aa = append(aa, 5) // [5]
 
 // maps
 m := map[string]int{
@@ -75,9 +123,10 @@ m := map[string]int{
     "b":   2,
 }
 
-// slices
-slice := []int{1, 2, 3}
-slice := arr[:]
+// dynamic allocation
+m := make(map[string]int)
+m["key"] = 5
+delete(m, "key")
 ```
 
 ## Structs
@@ -128,6 +177,13 @@ if _, ok = m["aaa"]; ok {
 if err != nil {
     return fmt.Errorf("failed to do stuff: %w", err)
 }
+
+// defer
+f, err := os.Open("filename.ext")
+if err != nil {
+    return "", err
+}
+defer f.Close()
 ```
 
 ## Interfaces
@@ -171,7 +227,7 @@ func CreatePerson(firstName string) *Person {
 	}
 }
 
-func (p *Person) GetFirstName() string {
+func (p *Person) FirstName() string {
 	return p.firstName
 }
 
@@ -271,6 +327,14 @@ func main() {
     go readMessages(ch1, ch2)
     writeMessages(ch1, ch2)
 }
+```
+
+## "Futures"
+
+```go
+c := make(chan int, 1)
+go func() { c <- process() }() // async
+v := <-c                       // await
 ```
 
 ## Mutual exclusion
