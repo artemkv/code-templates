@@ -1,3 +1,54 @@
+## The environment
+
+Check the Go version
+```
+go version
+```
+
+Install a dependency
+```
+go get example.com/theirmodule
+go get example.com/theirmodule@branch
+go get example.com/theirmodule@version_tag
+go get example.com/theirmodule@commit_hash
+```
+
+Install the latest version of a dependency
+```
+go get example.com/theirmodule@latest
+```
+
+Remove a dependency
+```
+go get example.com/theirmodule@none
+```
+
+Update all dependencies to the latest version
+```
+go get -u all
+go mod tidy
+```
+
+Prune unused dependencies
+```
+go mod tidy
+```
+
+
+Build the app
+```
+go build .
+```
+
+Run tests
+
+```
+go test
+go test <package_name>
+go test -cover
+go test -coverprofile result.out
+```
+
 ## "Hello World"
 
 ```go
@@ -28,17 +79,36 @@ const (
 )
 ```
 
+## String formatting
+
+```go
+city := "Barcelona"
+fmt.Printf("City: %s", city) // City: Barcelona
+
+p := getPerson()
+fmt.Printf("%v", p)  // &{John 38}
+fmt.Printf("%#v", p) // &main.Person{name:"John", age:38}
+fmt.Printf("%T", p)  // *main.Person
+
+n := 10
+fmt.Printf("%d", n) // 10
+
+pi := 3.14
+fmt.Printf("%f", pi)    // 3.140000
+fmt.Printf("%.2f", pi)  // 3.14
+fmt.Printf("%6.2f", pi) //   3.14
+```
+
 ## Conditional statements
 
 ```go
 if x < 0 {
     return 0
 }
-return x // avoid else (indent error flow)
+return x // avoid else
 
 // assign and check
 if v, ok := m["key"]; ok {
-    fmt.Printf("Value is: %d", v)
 }
 ```
 
@@ -47,22 +117,26 @@ if v, ok := m["key"]; ok {
 ```go
 // for loop
 for i := 0; i < 5; i++ {
-    fmt.Printf("Iteration %d\n", i)
 }
 
 // "while" loop:
 for x < 5 {
-    // do something
 }
 
 // infinite loop:
 for {
-    // do something
 }
 
 // for range loop
 for k, v := range slice {
-    fmt.Printf("%d %d\n", k, v)
+}
+
+// ignore value
+for k := range slice {
+}
+
+// ignore key
+for _, v := range slice {
 }
 ```
 
@@ -79,6 +153,16 @@ func calc(x int, y int) (sum int, prod int) {
     sum = x + y
     prod = x * y
     return
+}
+
+// partial function
+func parse(s string) (int, error) {
+	n, err := strconv.Atoi(s)
+	if err != nil {
+		return 0, err
+	}
+
+	return n, nil
 }
 
 // method
@@ -125,7 +209,10 @@ m := map[string]int{
 
 // dynamic allocation
 m := make(map[string]int)
+
+// accessing map items
 m["key"] = 5
+var val, ok = m["key"]
 delete(m, "key")
 ```
 
@@ -135,6 +222,20 @@ delete(m, "key")
 type Person struct {
     name string
     age  int
+}
+
+// pointer
+p := &Person{}
+
+// value
+p := Person{}
+
+// return a pointer to a struct from a function
+func getPerson() *Person {
+	return &Person{
+		name: "John",
+		age:  38,
+	}
 }
 ```
 
@@ -159,10 +260,16 @@ type Person struct {
 ## Error handling
 
 ```go
+// standard approach: indent error flow
 f, err := os.Open("filename.ext")
 if err != nil {
-    log.Fatal(err) // calls os.Exit(1)
+    // handle error
+    return err
 }
+// do something with f
+
+// log and exit
+log.Fatal(err) // calls os.Exit(1)
 
 // create error
 err := fmt.Errorf("Invalid value %s", val)
