@@ -1,11 +1,22 @@
 ## The environment
 
 Check the Go version
+
 ```
 go version
 ```
 
+Create a new project
+
+```
+mkdir hello
+cd hello
+
+go mod init example.com/hello
+```
+
 Install a dependency
+
 ```
 go get example.com/theirmodule
 go get example.com/theirmodule@branch
@@ -14,28 +25,32 @@ go get example.com/theirmodule@commit_hash
 ```
 
 Install the latest version of a dependency
+
 ```
 go get example.com/theirmodule@latest
 ```
 
 Remove a dependency
+
 ```
 go get example.com/theirmodule@none
 ```
 
 Update all dependencies to the latest version
+
 ```
 go get -u all
 go mod tidy
 ```
 
 Prune unused dependencies
+
 ```
 go mod tidy
 ```
 
-
 Build the app
+
 ```
 go build .
 ```
