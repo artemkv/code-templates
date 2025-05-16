@@ -64,6 +64,18 @@ go test -cover
 go test -coverprofile result.out
 ```
 
+Format the code
+
+```
+go fmt ./...
+```
+
+Examine the code for potential errors
+
+```
+go vet ./...
+```
+
 ## "Hello World"
 
 ```go
@@ -100,6 +112,9 @@ const (
 city := "Barcelona"
 fmt.Printf("City: %s", city) // City: Barcelona
 
+b := true
+fmt.Printf("%t", b) // true
+
 p := getPerson()
 fmt.Printf("%v", p)  // &{John 38}
 fmt.Printf("%#v", p) // &main.Person{name:"John", age:38}
@@ -112,6 +127,14 @@ pi := 3.14
 fmt.Printf("%f", pi)    // 3.140000
 fmt.Printf("%.2f", pi)  // 3.14
 fmt.Printf("%6.2f", pi) //   3.14
+```
+
+## String builder
+
+```go
+sb := strings.Builder{}
+sb.WriteString("Hello")
+s := sb.String()
 ```
 
 ## Conditional statements
@@ -160,7 +183,7 @@ for _, v := range slice {
 ```go
 // multiple return values
 func calc(x int, y int) (int, int) {
-	return x + y, x * y
+    return x + y, x * y
 }
 
 // named result parameters (questionable)
@@ -172,12 +195,12 @@ func calc(x int, y int) (sum int, prod int) {
 
 // partial function
 func parse(s string) (int, error) {
-	n, err := strconv.Atoi(s)
-	if err != nil {
-		return 0, err
-	}
+    n, err := strconv.Atoi(s)
+    if err != nil {
+        return 0, err
+    }
 
-	return n, nil
+    return n, nil
 }
 
 // method
@@ -247,10 +270,10 @@ p := Person{}
 
 // return a pointer to a struct from a function
 func getPerson() *Person {
-	return &Person{
-		name: "John",
-		age:  38,
-	}
+    return &Person{
+        name: "John",
+        age:  38,
+    }
 }
 ```
 
@@ -336,25 +359,125 @@ if ok {
 }
 ```
 
+## Embedding interfaces
+
+```go
+type Reader interface {
+    Read()
+}
+
+type Writer interface {
+    Write()
+}
+
+// Both Reader and Writer
+type ReaderWriter interface {
+    Reader
+    Writer
+}
+```
+
 ## Imitate Classes, Constructors, and Getter/Setters (avoid)
 
 ```go
 type Person struct {
-	firstName string
+    firstName string
 }
 
 func CreatePerson(firstName string) *Person {
-	return &Person{
-		firstName: firstName,
-	}
+    return &Person{
+        firstName: firstName,
+    }
 }
 
 func (p *Person) FirstName() string {
-	return p.firstName
+    return p.firstName
 }
 
 func (p *Person) SetFirstName(value string) {
-	p.firstName = value
+    p.firstName = value
+}
+```
+
+## Functional Options Pattern
+
+(Use when your API method already has more than 3 arguments and still expanding)
+
+```go
+type options struct {
+    greeting string
+    farewell string
+}
+
+type Option interface {
+    apply(*options)
+}
+
+type greetingOption string
+
+func (x greetingOption) apply(opts *options) {
+    opts.greeting = string(x)
+}
+
+type farewellOption string
+
+func (x farewellOption) apply(opts *options) {
+    opts.farewell = string(x)
+}
+
+func WithGreeting(s string) Option {
+    return greetingOption(s)
+}
+
+func WithFarewell(s string) Option {
+    return farewellOption(s)
+}
+
+type Message string
+
+func NewMessage(text string, opts ...Option) Message {
+    // defaults
+    options := options{
+        greeting: "",
+        farewell: "",
+    }
+
+    for _, o := range opts {
+        o.apply(&options)
+    }
+
+    return Message(fmt.Sprintf("%s, %s. %s", options.greeting, text, options.farewell))
+}
+
+func main() {
+    msg := NewMessage(
+        "your coffee is ready",
+        WithGreeting("Good morning"),
+        WithFarewell("Have a great day!"))
+    fmt.Println(msg)
+}
+```
+
+## Generics
+
+```go
+// function
+func Min[T cmp.Ordered](first T, second T) T {
+    if first < second {
+        return first
+    }
+    return second
+}
+
+// struct
+type Pair[A, B comparable] struct {
+    first  A
+    second B
+}
+
+// method
+func (a Pair[A, B]) Equals(b Pair[A, B]) bool {
+    return a.first == b.first && a.second == b.second
 }
 ```
 
@@ -397,9 +520,9 @@ func main() {
 
 ```go
 func readMessages(ch <-chan Message) {
-	for msg := range ch {
-		fmt.Printf("%s", msg.content)
-	}
+    for msg := range ch {
+        fmt.Printf("%s", msg.content)
+    }
     fmt.Printf("Received all messages")
 }
 
@@ -414,7 +537,7 @@ func writeMessages(ch chan<- Message) {
 }
 ```
 
-## Receiving from miltiple channels
+## Receiving from multiple channels
 
 ```go
 type Message struct {
@@ -459,6 +582,85 @@ go func() { c <- process() }() // async
 v := <-c                       // await
 ```
 
+## Context cancellation for goroutines (manual)
+
+```go
+func worker(ctx context.Context) {
+    for {
+        select {
+        case <-ctx.Done():
+            fmt.Printf("%v", ctx.Err()) // context canceled
+            return
+        default:
+            fmt.Print("*")
+            time.Sleep(1 * time.Second)
+        }
+    }
+}
+
+func main() {
+    // Cancelable context
+    ctx, cancel := context.WithCancel(context.Background())
+    defer cancel()
+
+    go worker(ctx)
+    time.Sleep(5 * time.Second)
+    cancel()
+}
+```
+
+## Cancelling by timeout
+
+```go
+func worker(ctx context.Context) {
+    for {
+        select {
+        case <-ctx.Done():
+            fmt.Printf("%v", ctx.Err()) // context deadline exceeded
+            return
+        default:
+            fmt.Print("*")
+            time.Sleep(1 * time.Second)
+        }
+    }
+}
+
+func main() {
+    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+    defer cancel()
+
+    go worker(ctx)
+    time.Sleep(10 * time.Second)
+}
+```
+
+## Wait for all goroutines to complete
+
+```go
+func worker1(wg *sync.WaitGroup) {
+    defer wg.Done()
+
+    time.Sleep(3 * time.Second)
+    fmt.Println("Worker 1 done")
+}
+
+func worker2(wg *sync.WaitGroup) {
+    defer wg.Done()
+
+    time.Sleep(5 * time.Second)
+    fmt.Println("Worker 2 done")
+}
+
+func main() {
+    var wg sync.WaitGroup
+    wg.Add(2)
+    go worker1(&wg)
+    go worker2(&wg)
+    wg.Wait()
+    fmt.Println("All finished")
+}
+```
+
 ## Mutual exclusion
 
 ```go
@@ -480,6 +682,25 @@ func Balance() int {
     b := balance
     mu.Unlock()
     return b
+}
+```
+
+## Gracefully handle SIGTERM
+
+```go
+sigChan := make(chan os.Signal, 1)
+// (Ctrl+C or SIGTERM)
+signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+
+for {
+    select {
+    case <-sigChan:
+        fmt.Println("Received kill signal")
+        return
+    default:
+        fmt.Print("*")
+        time.Sleep(1 * time.Second)
+    }
 }
 ```
 
